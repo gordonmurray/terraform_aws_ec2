@@ -14,19 +14,33 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# Network interface
+resource "aws_network_interface" "default" {
+  subnet_id   = aws_subnet.subnet-1a.id
+  private_ips = ["100.10.1.0"]
+
+  tags = {
+    Name = "terraform-webserver"
+  }
+}
+
 
 # Create EC2 instance
 resource "aws_instance" "example" {
-  ami                    = "${data.aws_ami.ubuntu.id}"
-  instance_type          = "t3.micro"
-  vpc_security_group_ids = ["${aws_security_group.example.id}"]
-  key_name               = "${aws_key_pair.pem-key.key_name}"
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+  key_name      = aws_key_pair.pem-key.key_name
 
   tags = {
     Name = "terraform-webserver"
   }
 
- provisioner "file" {
+  network_interface {
+    network_interface_id = aws_network_interface.default.id
+    device_index         = 0
+  }
+
+  provisioner "file" {
     // upload the index.html file
     source      = "files/index.html"
     destination = "/home/ubuntu/index.html"
@@ -35,7 +49,8 @@ resource "aws_instance" "example" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt update",
-      "sudo apt install apache2 -y",
+      "sudo apt upgrade -y",
+      "sudo apt install apache2-bin ssl-cert apache2 -y",
       "sudo mv /home/ubuntu/index.html /var/www/html/index.html"
     ]
   }
@@ -44,10 +59,10 @@ resource "aws_instance" "example" {
     // connect over ssh
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${file("~/.ssh/id_rsa")}"
+    private_key = file("~/.ssh/id_rsa")
     timeout     = "1m"
     port        = "22"
-    host        = "${aws_instance.example.public_dns}"
+    host        = aws_instance.example.public_dns
   }
 
 }
