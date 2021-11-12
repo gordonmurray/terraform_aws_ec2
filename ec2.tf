@@ -51,4 +51,8 @@ resource "aws_instance" "example" {
     host        = aws_instance.example.public_dns
   }
 
+  metadata_options {
+    http_tokens = "required"
+  }
+
 }
