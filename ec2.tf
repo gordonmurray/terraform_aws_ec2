@@ -22,6 +22,16 @@ resource "aws_instance" "example" {
   subnet_id              = aws_subnet.subnet-1a.id
   vpc_security_group_ids = [aws_security_group.example.id]
 
+  root_block_device {
+    delete_on_termination = true
+    encrypted             = true
+    volume_size           = "10"
+
+    tags = {
+      Name = "terraform-webserver"
+    }
+  }
+
   tags = {
     Name = "terraform-webserver"
   }
