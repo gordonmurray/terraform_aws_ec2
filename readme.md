@@ -1,6 +1,6 @@
+[![tfsec](https://github.com/gordonmurray/terraform_webserver/actions/workflows/tfsec-analysis.yml/badge.svg)](https://github.com/gordonmurray/terraform_webserver/actions/workflows/tfsec-analysis.yml)
+
 # Using Terraform to create a simple Webserver on AWS
-
-
 
 ### Cost
 
