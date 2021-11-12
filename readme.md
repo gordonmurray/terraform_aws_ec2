@@ -12,7 +12,7 @@ Powered by Infracost.
  aws_instance.example
  ├─ Instance usage (Linux/UNIX, on-demand, t3.micro)          730  hours         $8.32
  └─ root_block_device
-    └─ Storage (general purpose SSD, gp2)                       8  GB            $0.88
+    └─ Storage (general purpose SSD, gp2)                      10  GB            $1.10
 
- OVERALL TOTAL                                                                   $9.20
+ OVERALL TOTAL                                                                   $9.42
  ```
